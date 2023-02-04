@@ -9,27 +9,64 @@ bool VirtualTFT::Init()
 		Log("Failed to create window and renderer:", 1);
 		return false;
 	}
-
-	SDL_SetRenderDrawColor(_renderer, 50, 50, 50, 255);
-	SDL_RenderClear(_renderer);
+	uiTexture = SDL_CreateTexture(_renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING,
+								  _width * 2 + 100, _height * 2 + 100);
 	return true;
+}
+
+void VirtualTFT::ClearFrame(Uint8 r, Uint8 g, Uint8 b)
+{
+	int pitch = 0;
+	uiPixels = nullptr;
+	if (!SDL_LockTexture(uiTexture, NULL, (void**)&uiPixels, &pitch)) {
+		// lockedPixels now points to driver-provided memory that we can write to that the driver will then copy to uiTexture
+	    // can't ignore pitch, it might be wider than UI_WIDTH
+	}
+
+	Uint32 color = ((r << 8 | g) << 8) | b | 0xff000000;
+	memset(uiPixels, color, (_width *2 + 100) * (_height * 2 + 100) * 4);
+}
+
+void VirtualTFT::UpdateFrame()
+{
+	SDL_UnlockTexture(uiTexture);
+
+	SDL_Rect rect;
+	rect.x = rect.y = 0;
+	rect.w = _width * 2 + 100;
+	rect.h = _height * 2 + 100;
+
+	SDL_RenderCopy(_renderer, uiTexture, &rect, &rect);
+	SDL_RenderPresent(_renderer);
 }
 
 void VirtualTFT::DrawPixel(unsigned int x, unsigned int y, Uint8 r, Uint8 g, Uint8 b)
 {
-	SDL_SetRenderDrawColor(_renderer, r, g, b, 255);
+	if (x<0 || x>_width - 1 || y<0 || y > _height - 1) return;
 
-	SDL_Rect rect;
-	rect.x = 50 + x * 2;
-	rect.y = 50 + y * 2;
-	rect.h = rect.w = 2;
+	Uint32 color = ((r << 8 | g) << 8) | b | 0xff000000;
 
-	SDL_RenderDrawRect(_renderer, &rect);
+	y *= 2;	x *= 2;
+	unsigned y1 = y * (_width * 2 + 100);
+	uiPixels[y1 + x] = color;
+	uiPixels[y1 + x + 1] = color;
+	y++;
+	y1 = y * (_width * 2 + 100);
+	uiPixels[y1 + x] = color;
+	uiPixels[y1 + x + 1] = color;
+}
 
+void VirtualTFT::DrawLineBuffer(Uint16* colorB, unsigned width, unsigned lineNumber) {
+	for (unsigned x = 0; x < width; x++)
+	{
+		Uint8 r = colorB[x] >> 8 | 0b00000111;
+		Uint8 g = (colorB[x] >> 2) | 0b00000011;
+		Uint8 b = colorB[x] << 3 | 0b00000111;
+		DrawPixel(x, lineNumber, r, g, b);
+	}
 }
 
 #define swap(x, y) { int temp = x; x = y; y = temp; }
-
 
 void VirtualTFT::DrawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
 	int16_t x2, int16_t y2, Uint8 r, Uint8 g, Uint8 b)
@@ -82,17 +119,21 @@ void VirtualTFT::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Uint8 
 
 void VirtualTFT::DrawFastHLine(unsigned int x, unsigned int y, int w, Uint8 r, Uint8 g, Uint8 b)
 {
-	SDL_SetRenderDrawColor(_renderer, r, g, b, 255);
-	
+	if (x<0 || x>_width - 1 || y<0 || y > _height - 1) return;
 
-	SDL_Rect rect;
-	rect.x = 50 + x * 2;
-	rect.y = 50 + y * 2;
-	rect.h = 2;
-	rect.w = w * 2;
+	Uint32 c = ((r << 8 | g) << 8) | b | 0xff000000;
+	y *= 2; x *= 2;
 
-	SDL_RenderDrawRect(_renderer, &rect);
+	unsigned y1 = y * (_width * 2 + 100);
 
+	for (unsigned i = x; i < x + w * 2; i++) {
+		uiPixels[y1 + i] = c;
+	}
+	y++;
+	y1 = y * (_width * 2 + 100);
+	for (unsigned i = x; i < x + w * 2; i++) {
+		uiPixels[y1 + i] = c;
+	}
 }
 
 void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
@@ -180,21 +221,4 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 		DrawFastHLine(a, y, b - a  + 1, r, g, blue);
 		//writeFastHLine(a, y, b - a + 1, color);
 	}
-}
-
-
-void VirtualTFT::ClearFrame(Uint8 r, Uint8 g, Uint8 b)
-{
-	SDL_SetRenderDrawColor(_renderer, r, g, b, 255);
-	SDL_RenderClear(_renderer);
-
-	SDL_Rect rect;
-	rect.x = 50 - 1;
-	rect.y = 50 - 1;
-	rect.h = _height * 2 + 1;
-	rect.w = _width * 2 + 1;
-
-	SDL_SetRenderDrawColor(_renderer, 200, 200, 200, 255);
-	SDL_RenderDrawRect(_renderer, &rect);
-
 }

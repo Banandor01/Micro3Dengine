@@ -10,17 +10,19 @@
 #include "../../Micro3Dengine\Face.h"
 #include "../../Micro3Dengine\Scene.h"
 
+#include <Windows.h>
+
 void Init();
 void Loop();
 
-int main(int argc, char* argvp[])
+int WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,
+			LPSTR lpCmdLine, int nShowCmd)
 {
 	Init();
 	Loop();
 
 	std::getchar();
 }
-
 
 // ******************************************************************************************************************
 // Embedded device memory allocations and functions  
@@ -53,9 +55,18 @@ void Init()
 void Loop()
 {
 	float zr = 0;
-	while (true) {
+	bool run = true;
+	while (run) {
 
-		zr += 0.6f;
+		SDL_Event event;
+		SDL_PollEvent(&event);
+		switch (event.type) {
+		case SDL_QUIT:
+			run = false;
+			break;
+		}
+
+		zr += 1.0f;
 		
 		// The 3 lines below demonstrate how to use the engine, set properties like pos, scale, rotation and after that call scene.RenderObject merthod
 		bridgeObject.SetRotation(zr/3, zr, zr / 2);
@@ -63,7 +74,6 @@ void Loop()
 		bridgeObject.SetScale(3, 3, 3);
 
 		// The above lines are made just for demo or fun... The linear algebra is cool
-
 		Matrix3x3<float> fo;
 		fo.CreateRotationMatrix(zr, zr, zr / 2);
 		Vector3D<float> pos;
@@ -80,9 +90,8 @@ void Loop()
 			cubes[i]->SetPosition(pos);
 			cubes[i]->SetScale(0.5, -0.5, 0.5);
 		}
-
 		scene.RenderObjects();
-
+		
 		SDL_Delay(5);
 	}
 }
