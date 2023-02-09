@@ -6,6 +6,7 @@
 #include "Vectors.h"
 #include "Matrices.h"
 #include "Face.h"
+#include "Camera.h"
 
 template<class numT>
 Object3D<numT>::Object3D(const Vector3D<numT>* verts1, unsigned int vertN1, const Face* faces1, unsigned int faceN1) :
@@ -58,7 +59,7 @@ void Object3D<numT>::SetScale(Vector3D<numT> scaleVector) {
 }
 
 template <class numT>
-void Object3D<numT>::ObjectToWorld(Vector3D<numT>* rotatedVerts, unsigned int& num,
+void Object3D<numT>::ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
 								   Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling)
 {
 		
@@ -84,10 +85,16 @@ void Object3D<numT>::ObjectToWorld(Vector3D<numT>* rotatedVerts, unsigned int& n
 #endif
 		Vector3D<numT> vect(xv, yv, zv);
 		vect = vect * rotationMatrix;
+		vect += position;
+		
+		vect += camera.Position();
+		vect = vect * camera.Rotation();
+		
 
-		rotatedVerts[offset+i].X = vect.X + position.X;
-		rotatedVerts[offset+i].Y = vect.Y + position.Y;
-		rotatedVerts[offset+i].Z = vect.Z + position.Z;
+		rotatedVerts[offset+i].X = vect.X;
+		rotatedVerts[offset+i].Y = vect.Y;
+		rotatedVerts[offset+i].Z = vect.Z;
+
 	}
 	num += vertN;
 
@@ -98,6 +105,9 @@ void Object3D<numT>::ObjectToWorld(Vector3D<numT>* rotatedVerts, unsigned int& n
 		face.vector1 = &rotatedVerts[faces[i].index1+offset];
 		face.vector2 = &rotatedVerts[faces[i].index2+offset];
 		face.vector3 = &rotatedVerts[faces[i].index3+offset];
+
+		// primitiv clipping 
+		if (face.vector1->Z < 0.2f || face.vector2->Z < 0.2f || face.vector3->Z < 0.2f) continue;
 
 		face.color = &this->color;
 

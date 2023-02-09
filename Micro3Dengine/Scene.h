@@ -1,14 +1,20 @@
 #pragma once
 
+#include "Camera.h"
 #include "Face.h"
-#include "Vectors.h"
+
 #include "object3d.h"
+
+#define MAXOBJECTS 1000
+#define MAXFACES  100000
 
 
 // we will store the rotated vectors and faces in these arrays, again we are thinking it an embedded system, so no 
 // heap operation is used, not so beaty but safe
 template<class numT>
 class Scene {
+
+	Camera<numT> camera;
 public:
 	Scene(unsigned width, unsigned height)
 	{
@@ -23,63 +29,31 @@ public:
 		this->renderer = renderer;
 	}
 
-	void AddObject(Object3D<numT>* objectToAdd) {
-		// TODO check there is enough store in array
-		objects[objectsNumber] = objectToAdd;
-		objectsNumber++;
+	void SetCameraRotation(numT x, numT y, numT z) {
+		camera.SetRotation(x, y, z);
 	}
 
-	void RemoveObject(Object3D<numT>* objectToRemove) {
-		unsigned i = 0;
-		for (; i < objectsNumber; i++) {
-			if (objects[i] == objectToRemove) {
-				objectsNumber--;
-				objects[i] = objects[objectsNumber];					
-				break;
-			}
-		}
+	void SetCameraPosition(numT x, numT y, numT z) {
+		camera.SetPosition(Vector3D<numT>(-x, -y, -z));
 	}
 
-	void RenderObjects() {
+	Camera<numT>& Camera() { return camera; }
 
-		unsigned faceN = 0;
-		unsigned vectorsN = 0;
-
-		for (unsigned i = 0; i < objectsNumber; i++) {
-			objects[i]->ObjectToWorld(vectors, vectorsN, faces, faceN, true);
-		}
-		qsort(faces, faceN, sizeof(Face3D<float>), Scene::compare);
-		matrix.ProjectVectorsNoZnormalization(vectors, vectorsN);
-
-		// From now we are in 2D space, we have faces (triangles) with normals and original z coordinates in their peaks 
-
-		// Rendering faces
-		// This is a simple frame buffer based rendering method, the scaneline algorith which is better for embedded system is comming soon
-		renderer->ClearFrame(50, 50, 50);
-		
-		for (unsigned i = 0; i < faceN; i++)
-		{
-			float light = faces[i].normalVector.DotProduct(Vector3D<float>(0, 0, -1));
-			if (light < 0) light = 0;
-					
-			Color color = *faces[i].color;
-			renderer->FillTriangle<float>(faces[i], color.SetBrightness(light));
-		}
-
-		renderer->UpdateFrame();
-	}
+	void AddObject(Object3D<numT>* objectToAdd);
+	void RemoveObject(Object3D<numT>* objectToRemove);
+	void RenderObjects();
 
 private:
-	Vector3D<numT> vectors[500];
-	Face3D <numT> faces[500];
+	Vector3D<numT> vectors[MAXFACES];
+	Face3D <numT> faces[MAXFACES];
 
 	unsigned objectsNumber;
-	Object3D<numT>* objects[20];
+	Object3D<numT>* objects[MAXOBJECTS];
 
 	ProjectionMatrix<float> matrix;
 
 	VirtualTFT* renderer;
-
+	
 	// helpers
 	static int compare(const void* a, const void* b)
 	{
@@ -95,3 +69,54 @@ private:
 		return 0;
 	}
 };
+
+template<class numT>
+void Scene<numT>::AddObject(Object3D<numT>* objectToAdd) {
+	// TODO sign the error
+	if (objectsNumber < MAXOBJECTS) {
+		objects[objectsNumber] = objectToAdd;
+		objectsNumber++;
+	}
+}
+
+template<class numT>
+void Scene<numT>::RemoveObject(Object3D<numT>* objectToRemove) {
+	unsigned i = 0;
+	for (; i < objectsNumber; i++) {
+		if (objects[i] == objectToRemove) {
+			objectsNumber--;
+			objects[i] = objects[objectsNumber];
+			break;
+		}
+	}
+}
+
+template<class numT>
+inline void Scene<numT>::RenderObjects() {
+
+	unsigned faceN = 0;
+	unsigned vectorsN = 0;
+
+	for (unsigned i = 0; i < objectsNumber; i++) {
+		objects[i]->ObjectToWorld(camera, vectors, vectorsN, faces, faceN, true);
+	}
+	qsort(faces, faceN, sizeof(Face3D<float>), Scene::compare);
+	matrix.ProjectVectorsNoZnormalization(vectors, vectorsN);
+
+	// From now we are in 2D space, we have faces (triangles) with normals and original z coordinates in their peaks 
+
+	// Rendering faces
+	// This is a simple frame buffer based rendering method, the scaneline algorith which is better for embedded system is comming soon
+	renderer->ClearFrame(50, 50, 50);
+
+	for (unsigned i = 0; i < faceN; i++)
+	{
+		float light = faces[i].normalVector.DotProduct(Vector3D<float>(0, 0, -1));
+		if (light < 0.3f) light = 0.3f;
+
+		Color color = *faces[i].color;
+		renderer->FillTriangle<float>(faces[i], color.SetBrightness(light));
+	}
+
+	renderer->UpdateFrame();
+}

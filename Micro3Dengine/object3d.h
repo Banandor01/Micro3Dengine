@@ -3,10 +3,13 @@
 
 template<class T>
 class Vector3D;
+template<class T>
+class Camera;
 struct Face;
 
 #include "Matrices.h"
 #include "Face.h"
+
 
 
 /// <summary>
@@ -36,8 +39,8 @@ public:
 	// void GetModelToWorldMatrix();
 
 	// Apply Rotation, Sacling and translation inorder to move model into world space with set orreintation
-	void ObjectToWorld(Vector3D<numT>* rotatedVerts, unsigned int& num,
-					   Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling = true);
+	void ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
+						Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling = ture);
 	
 	// Getters
 	Color& GetColor() { return color; }

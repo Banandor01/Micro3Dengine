@@ -43,6 +43,25 @@ public:
 		return Vector3D<numT> (x, y, z);
 	}
 
+	Matrix3x3<numT> operator* (const Matrix3x3& right)
+	{
+		Matrix3x3<numT> nM;
+
+		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;	
+		nM.m10 = m00 * right.m10 + m10 * right.m11 + m20 * right.m12;
+		nM.m20 = m00 * right.m20 + m10 * right.m21 + m20 * right.m22;
+
+		nM.m01 = m01 * right.m00 + m11 * right.m01 + m21 * right.m02;
+		nM.m11 = m01 * right.m10 + m11 * right.m11 + m21 * right.m12;
+		nM.m21 = m01 * right.m20 + m11 * right.m21 + m21 * right.m22;
+
+		nM.m02 = m02 * right.m00 + m12 * right.m01 + m22 * right.m02;
+		nM.m12 = m02 * right.m10 + m12 * right.m11 + m22 * right.m12;
+		nM.m22 = m02 * right.m20 + m12 * right.m21 + m22 * right.m22;
+
+		return nM;
+	}
+
 private:
 	numT m00, m10, m20;
 	numT m01, m11, m21;

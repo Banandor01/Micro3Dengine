@@ -117,12 +117,32 @@ void VirtualTFT::DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Uint8 
 	}
 }
 
-void VirtualTFT::DrawFastHLine(unsigned int x, unsigned int y, int w, Uint8 r, Uint8 g, Uint8 b)
+void VirtualTFT::DrawFastHLine(int x, int y, int w, Uint8 r, Uint8 g, Uint8 b)
 {
-	if (x<0 || x>_width - 1 || y<0 || y > _height - 1) return;
+
+	if (x <0) {
+
+		if (x + w > 0) {
+			w = w + x;
+			x = 0;
+		}
+		else {
+			return;
+		}		
+	}
+	if (x > _width - 1) {
+		return;
+	}
+	if (x+ w > _width - 1) {
+		w = _width - 1 - x;
+	}
+
+	// mirroring
+	y = _height - y;
 
 	Uint32 c = ((r << 8 | g) << 8) | b | 0xff000000;
 	y *= 2; x *= 2;
+	x += 50;
 
 	unsigned y1 = y * (_width * 2 + 100);
 
@@ -138,6 +158,11 @@ void VirtualTFT::DrawFastHLine(unsigned int x, unsigned int y, int w, Uint8 r, U
 
 void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 	int x2, int y2, Uint8 r, Uint8 g, Uint8 blue) {
+
+
+	if (y0 >= _height || y1 >= _height || y2 >= _height) return;
+	if (y0 < 0 ||  y1 < 0 ||  y2 < 0) return;
+
 
 	int16_t a, b, y, last;
 

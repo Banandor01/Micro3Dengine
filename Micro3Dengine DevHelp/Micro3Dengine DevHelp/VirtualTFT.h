@@ -28,7 +28,7 @@ public:
     void DrawLineBuffer(Uint16* colorB, unsigned width, unsigned lineNumber);
     void DrawPixel(unsigned int x, unsigned int y, Uint8 r, Uint8 g, Uint8 b);
     void DrawLine(int16_t x0, int16_t y0, int16_t x1, int16_t y1, Uint8 r, Uint8 g, Uint8 b);
-    void DrawFastHLine(unsigned int x, unsigned int y, int w, Uint8 r, Uint8 g, Uint8 b);
+    void DrawFastHLine(int x, int y, int w, Uint8 r, Uint8 g, Uint8 b);
     void DrawTriangle(int16_t x0, int16_t y0, int16_t x1, int16_t y1,
                       int16_t x2, int16_t y2, Uint8 r, Uint8 g, Uint8 b);
 
