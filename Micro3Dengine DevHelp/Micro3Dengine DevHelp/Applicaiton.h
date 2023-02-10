@@ -11,28 +11,31 @@ template<class numT>
 class Application
 {
 public:
-	Application() : 
-		run(true), x(0), y(0) ,
-		xstep(0), ystep(0),
-		roll(0), rs(0), 
-		speed (0.1f)
+	Application() :
+		run(true), x(0), y(0), z(0),
+		xStep(0), yStep(0), zStep(0),
+		roll(0),yaw(0),
+		rollStep(0), yawStep(0),
+		speed (0)
 	{}	
 
 	bool HandleEvents(Camera<numT> & camera);
 	
 	bool Run() { return run; }
+
 	float X() { return x; }
 	float Y() { return y; }
+	float Z() { return z; }
 
-	float Roll()  { return roll; }
-	float Pitch() { return pitch; }
+	float Yaw()  { return yaw; }
+	float Roll() { return roll; }
 
 private:
-	float xstep, ystep;
-	float x, y;
+	float xStep, yStep, zStep;
+	float yawStep, rollStep;
 
-	float ps, rs;
-	float pitch, roll;
+	float x, y, z;
+	float yaw, roll;
 	
 	float speed;
 	bool run;
@@ -44,13 +47,17 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 	SDL_Event event;
 	SDL_PollEvent(&event);
 
+	float posy = 0;
+
 	switch (event.type) {
 
 	case SDL_QUIT:
 		run = false;
 		break;
 	case SDL_KEYUP:
-		xstep = ystep = rs = 0;
+		xStep = zStep = yStep = 0;
+		yawStep = 0;
+		rollStep = 0;
 		break;
 	case SDL_KEYDOWN:
 
@@ -59,35 +66,49 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 			break;
 		case SDLK_2:
 			break;
-
-		case SDLK_UP: ystep = +0.002f;
+		
+		//
+		case SDLK_UP:	 zStep = +0.01f;
 			break;
-		case SDLK_DOWN: ystep = -0.002f;
+		case SDLK_DOWN:  zStep = -0.01f;
 			break;
-		case SDLK_LEFT: xstep = -0.1f;
+		case SDLK_LEFT:  rollStep = -0.3f;
 			break;
-		case SDLK_RIGHT: xstep = 0.1f;
+		case SDLK_RIGHT: rollStep = 0.3f;
 			break;
+		
+		//		
 		case SDLK_a:
-			rs = 0.4f;
+			yawStep = 0.4f;
 			break;
 		case SDLK_d:
-			rs = -0.4f;
+			yawStep = -0.4f;
+			break;
+		case SDLK_w:
+			yStep = 0.4f;
+			break;
+		case SDLK_s:
+			yStep = -0.4f;
 			break;
 		default:;
 		}
 	}
 
-	if (speed <= 0.2f && speed >= 0) (speed += ystep);
-
+	if (speed <= 0.2f && speed >= -0.1f) (speed += zStep);
 	if (speed >= 0.2f) speed = 0.2f;
-	if (speed <= 0) speed = 0;
+	if (speed <= -0.1) speed = -0.1;
 
-	roll += rs;
-	auto vec = Vector3D<numT>(xstep, 0, speed);
+	roll += rollStep;
+	yaw -= -yawStep + roll / 100;
+
+	x += xStep;
+	y += yStep;
+	z += zStep;
+
+	auto vec = Vector3D<numT>(xStep, 0, speed);
 	camera.GoDirection(vec);
 
-	x += xstep;
-	y += ystep;
+	camera.Position().Y -= yStep;
+	
 	return true;
 }

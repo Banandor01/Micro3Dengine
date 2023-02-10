@@ -5,6 +5,12 @@
 
 struct Face {
 public:
+	Face(int i1, int i2, int i3) :
+	index1(i1),
+	index2(i2),
+	index3(i3) 
+	{}
+
 	unsigned int index1;
 	unsigned int index2;
 	unsigned int index3;

@@ -10,8 +10,6 @@ struct Face;
 #include "Matrices.h"
 #include "Face.h"
 
-
-
 /// <summary>
 /// Represent a rendereble 3D object (a mesh) with its vericies and faces
 /// </summary>
@@ -39,8 +37,8 @@ public:
 	// void GetModelToWorldMatrix();
 
 	// Apply Rotation, Sacling and translation inorder to move model into world space with set orreintation
-	void ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
-						Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling = ture);
+	void ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
+					   Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling = ture);
 	
 	// Getters
 	Color& GetColor() { return color; }
@@ -63,6 +61,8 @@ private:
 	
 	Matrix3x3<numT> rotationMatrix;
 
+	Color red;			// used for clip testing 
+	Color blue;			// used for clip testing
 	Color color;
 };
 

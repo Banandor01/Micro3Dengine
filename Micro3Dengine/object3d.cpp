@@ -16,6 +16,8 @@ Object3D<numT>::Object3D(const Vector3D<numT>* verts1, unsigned int vertN1, cons
 	scale(1, 1, 1),
 	position(0,0,0)
 {
+	red = Color(255, 10, 10);
+	blue = Color(10, 10, 255);
 }
 
 template<class numT>
@@ -59,7 +61,7 @@ void Object3D<numT>::SetScale(Vector3D<numT> scaleVector) {
 }
 
 template <class numT>
-void Object3D<numT>::ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
+void Object3D<numT>::ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
 								   Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling)
 {
 		
@@ -90,11 +92,7 @@ void Object3D<numT>::ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* r
 		vect += camera.Position();
 		vect = vect * camera.Rotation();
 		
-
-		rotatedVerts[offset+i].X = vect.X;
-		rotatedVerts[offset+i].Y = vect.Y;
-		rotatedVerts[offset+i].Z = vect.Z;
-
+		rotatedVerts[offset+i] = vect;
 	}
 	num += vertN;
 
@@ -102,14 +100,33 @@ void Object3D<numT>::ObjectToWorld(const Camera<numT>& camera, Vector3D<numT>* r
 	for (unsigned int i = 0; i < faceN; i++)
 	{
 		Face3D<numT> face;
-		face.vector1 = &rotatedVerts[faces[i].index1+offset];
-		face.vector2 = &rotatedVerts[faces[i].index2+offset];
-		face.vector3 = &rotatedVerts[faces[i].index3+offset];
+		face.vector1 = &rotatedVerts[faces[i].index1 + offset];
+		face.vector2 = &rotatedVerts[faces[i].index2 + offset];
+		face.vector3 = &rotatedVerts[faces[i].index3 + offset];
+
+		// if the face is behind the camera we skip that face
+		if (face.vector1->Z < 0.2f && face.vector2->Z < 0.2f && face.vector3->Z < 0.2f)
+		{
+			continue;
+		}
+	
+		face.color = &this->color;
 
 		// primitiv clipping 
-		if (face.vector1->Z < 0.2f || face.vector2->Z < 0.2f || face.vector3->Z < 0.2f) continue;
+		if (face.vector1->Z < 0.2f) {
+			face.vector1->Z = 0.2f;
+			//face.color = &this->red;
+		}
 
-		face.color = &this->color;
+		if (face.vector2->Z < 0.2f) {
+			face.vector2->Z = 0.2f; 
+			//face.color = &this->red;
+		}
+
+		if (face.vector3->Z < 0.2f) {
+			face.vector3->Z = 0.2f;
+			//face.color = &this->red;
+		}			
 
 		Vector3D<numT> normal = face.CalcualteNormal();
 		if (backfaceCulling) {			

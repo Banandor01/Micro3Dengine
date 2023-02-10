@@ -26,12 +26,12 @@ public:
 
 	}
 
-	Vector3D<numT> Position() const
+	Vector3D<numT> & Position() 
 	{
 		return position;
 	}
 
-	Matrix3x3<numT> Rotation() const
+	Matrix3x3<numT> & Rotation()
 	{
 		return rotation;
 	}
