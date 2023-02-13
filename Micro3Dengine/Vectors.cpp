@@ -181,7 +181,7 @@ Vector3D<numT>& Vector3D<numT>::operator*=(const Vector3D<numT>& right)
 
 
 template<class numT>
-inline void Vector3D<numT>::Normalize() {
+ Vector3D<numT> Vector3D<numT>::Normalize() {
 	numT lenght = sqrt(pow(X, 2) + pow(Y, 2) + pow(Z,2));
 	if (lenght != 0) {
 		X /= lenght;		
@@ -192,6 +192,7 @@ inline void Vector3D<numT>::Normalize() {
 		Y = Z = 0; // What should we do zero length vector
 		X = 1;
 	}
+	return *this;
 }
 
 template<class numT>
@@ -209,13 +210,9 @@ template<class numT>
 Vector3D<numT> Vector3D<numT>::CrossProduct(const Vector3D<numT>& right) 
 {
 	Vector3D dot;
-
 	dot.X = Y * right.Z - Z * right.Y;
 	dot.Y = Z * right.X - X * right.Z;
 	dot.Z = X * right.Y - Y * right.X;
-
-	dot.Normalize();
-
 	return dot;
 }
 

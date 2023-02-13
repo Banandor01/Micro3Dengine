@@ -6,38 +6,21 @@ template<class numT>
 class Camera
 {
 public:
-	Camera() : position(0, 0, 50)
-	{ }
+	Camera() : position(0, 0, 0) {}
 
-	void SetPosition(const Vector3D<numT>& const pos) {
-		position = pos;
-	}
-	void SetRotation(numT x, numT y, numT z)
-	{
-		rotation.CreateRotationMatrix(x, y, z);
-	}
-
-	void GoDirection(Vector3D<numT>& vect) {
-		vect = Vector3D<numT>(vect.X, vect.Y, -vect.Z);
-	    auto dirvect = vect * rotation;
-		
-		position.X += -dirvect.X;
-		position.Z += dirvect.Z;
-
-	}
-
-	Vector3D<numT> & Position() 
-	{
-		return position;
-	}
-
-	Matrix3x3<numT> & Rotation()
-	{
-		return rotation;
-	}
+	void SetPosition(const Vector3D<numT>& pos);
+	void SetRotation(numT x, numT y, numT z);
+	void GoForward(numT zStep, numT xStep);
+	void UpdateMatrix();	// calculate Matrix
 	
+	Matrix3x3<numT>& GetRotationMatrix();
+	Vector3D<numT>& GetRotationVect();
+	Vector3D<numT>& Position();
+	Mat44<numT>& GetMatrix();
 private:
+	void LookDirection(Vector3D<numT> pos, Vector3D<numT> direction, Vector3D<numT> up);
+	Mat44<numT> matrix4;
 	Vector3D<numT> position;
+	Vector3D<numT> rotVect;
 	Matrix3x3<numT> rotation;
 };
-

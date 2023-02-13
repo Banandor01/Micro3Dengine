@@ -39,6 +39,12 @@
     <ClCompile Include="Applicaiton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Micro3Dengine\Scene.cpp">
+      <Filter>Micro3Dengine</Filter>
+    </ClCompile>
+    <ClCompile Include="perlin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VirtualTFT.h">
@@ -75,6 +81,15 @@
       <Filter>Micro3Dengine</Filter>
     </ClInclude>
     <ClInclude Include="Applicaiton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="perlin.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ArrowModell.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MeshHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

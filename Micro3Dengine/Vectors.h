@@ -74,7 +74,7 @@ public:
 	Vector3D& operator/=(const Vector3D& right);
 
 	// Set the length of the vector to one
-	void Normalize();
+	Vector3D<numT> Normalize();
 
 	// Length of the vector
 	numT Length();

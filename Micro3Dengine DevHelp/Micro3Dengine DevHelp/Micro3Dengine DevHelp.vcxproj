@@ -135,9 +135,11 @@
     <ClCompile Include="..\..\Micro3Dengine\Camera.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Color.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\object3d.cpp" />
+    <ClCompile Include="..\..\Micro3Dengine\Scene.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Vectors.cpp" />
     <ClCompile Include="Applicaiton.cpp" />
     <ClCompile Include="Micro3Dengine DevHelp.cpp" />
+    <ClCompile Include="perlin.cpp" />
     <ClCompile Include="VirtualTFT.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,8 +152,11 @@
     <ClInclude Include="..\..\Micro3Dengine\Scene.h" />
     <ClInclude Include="..\..\Micro3Dengine\Vectors.h" />
     <ClInclude Include="Applicaiton.h" />
+    <ClInclude Include="ArrowModell.h" />
     <ClInclude Include="ILogger.h" />
+    <ClInclude Include="MeshHelper.h" />
     <ClInclude Include="models.h" />
+    <ClInclude Include="perlin.h" />
     <ClInclude Include="VirtualTFT.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -35,19 +35,19 @@ public:
 		m02 = -siny;        m12 = cosy * sinx;                          m22 = cosx * cosy;
 	}
 
-	friend Vector3D<numT> operator*(const Vector3D<numT>& vec, const Matrix3x3& m) 
+	friend Vector3D<numT> operator*(const Vector3D<numT>& vec, const Matrix3x3& m)
 	{
 		numT x = m.m00 * vec.X + m.m10 * vec.Y + m.m20 * vec.Z;
 		numT y = m.m01 * vec.X + m.m11 * vec.Y + m.m21 * vec.Z;
 		numT z = m.m02 * vec.X + m.m12 * vec.Y + m.m22 * vec.Z;
-		return Vector3D<numT> (x, y, z);
+		return Vector3D<numT>(x, y, z);
 	}
 
 	Matrix3x3<numT> operator* (const Matrix3x3& right)
 	{
 		Matrix3x3<numT> nM;
 
-		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;	
+		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;
 		nM.m10 = m00 * right.m10 + m10 * right.m11 + m20 * right.m12;
 		nM.m20 = m00 * right.m20 + m10 * right.m21 + m20 * right.m22;
 
@@ -62,11 +62,89 @@ public:
 		return nM;
 	}
 
-private:
+//private:
 	numT m00, m10, m20;
 	numT m01, m11, m21;
 	numT m02, m12, m22;
 };
+
+
+template<class numT>
+class Mat44 {
+public:
+	Mat44()
+	{
+		for (unsigned i = 0; i < 16; el[i++] = 0);
+
+		el[0] = 1;
+		el[5] = 1;
+		el[10] = 1;
+	}
+
+	numT* Elements() {
+		return el;
+	}
+
+	void Set(unsigned i, unsigned j, numT value) {
+		el[i + j*4] = value;
+	}
+
+	friend Vector3D<numT> operator*(const Vector3D<numT>& vec, Mat44<numT>& matrix)
+	{
+		auto m = matrix.Elements();
+
+		numT x = m[0] * vec.X + m[1] * vec.Y + m[2] * vec.Z + m[3];
+		numT y = m[4] * vec.X + m[5] * vec.Y + m[6] * vec.Z + m[7];
+		numT z = m[8] * vec.X + m[9] * vec.Y + m[10] * vec.Z + m[11];
+
+		return Vector3D<numT>(x, y, z);
+	}
+
+	// Create a rotation matrix
+	void SetRotation(numT x, numT y, numT z) {
+
+		numT x2 = x * M_PI / 180;
+		numT y2 = y * M_PI / 180;
+		numT z2 = z * M_PI / 180;
+
+		numT cosz = cos(z2);    numT sinz = sin(z2);
+		numT siny = sin(y2);    numT cosy = cos(y2);
+		numT sinx = sin(x2);    numT cosx = cos(x2);
+
+		el[0] = cosy * cosz;  el[1] = cosz * sinx * siny - cosx * sinz;     el[2] = cosx * cosz * siny + sinx * sinz; el[3] = 0;
+		el[4] = cosy * sinz;  el[5] = cosx * cosz + sinx * siny * sinz;     el[6] = cosx * siny * sinz - cosz * sinx; el[7] = 0;
+		el[8] = -siny;        el[9] = cosy * sinx;                          el[10] = cosx * cosy;					  el[11] = 0;
+		el[12] = 0;			  el[13] = 0;									el[14] = 0;								  el[15] = 0;
+	}
+
+
+	/*
+	Matrix4x4<numT> operator* (const Matrix3x3& right)
+	{
+		Matrix3x3<numT> nM;
+
+		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;
+		nM.m10 = m00 * right.m10 + m10 * right.m11 + m20 * right.m12;
+		nM.m20 = m00 * right.m20 + m10 * right.m21 + m20 * right.m22;
+
+		nM.m01 = m01 * right.m00 + m11 * right.m01 + m21 * right.m02;
+		nM.m11 = m01 * right.m10 + m11 * right.m11 + m21 * right.m12;
+		nM.m21 = m01 * right.m20 + m11 * right.m21 + m21 * right.m22;
+
+		nM.m02 = m02 * right.m00 + m12 * right.m01 + m22 * right.m02;
+		nM.m12 = m02 * right.m10 + m12 * right.m11 + m22 * right.m12;
+		nM.m22 = m02 * right.m20 + m12 * right.m21 + m22 * right.m22;
+
+		return nM;
+	}
+	*/
+
+
+private:
+	numT el[16];
+};
+
+
 
 // 4x4 matrix only needs for projection in this project, that is why it is not a general 4x4Matrix
 template<class numT>
@@ -84,8 +162,8 @@ public:
 		numT farmnear = far - near;
 
 		m00 = xScale;       m10 = 0;            m20 = 0;                        m30 = 0,
-		m01 = 0;            m11 = yScale;       m21 = 0;                        m31 = 0,
-		m02 = 0;            m12 = 0;            m22 = far / farmnear;           m32 = (-far * near) / farmnear;
+			m01 = 0;            m11 = yScale;       m21 = 0;                        m31 = 0,
+			m02 = 0;            m12 = 0;            m22 = far / farmnear;           m32 = (-far * near) / farmnear;
 		m03 = 0;            m13 = 0;            m23 = 1;                        m33 = 0;
 	}
 

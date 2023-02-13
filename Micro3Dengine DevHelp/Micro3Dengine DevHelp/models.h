@@ -3,7 +3,6 @@
 #endif
 
 #include "..\..\Micro3Dengine\Face.h";
-#include "..\..\Micro3Dengine\Face.h"
 
 // create the vertices using the CUSTOMVERTEX struct
 const Vector3D<float> Cubevectors[8] =

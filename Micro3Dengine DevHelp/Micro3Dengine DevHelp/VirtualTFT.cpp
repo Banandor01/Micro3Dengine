@@ -45,8 +45,10 @@ void VirtualTFT::DrawPixel(unsigned int x, unsigned int y, Uint8 r, Uint8 g, Uin
 	if (x<0 || x>_width - 1 || y<0 || y > _height - 1) return;
 
 	Uint32 color = ((r << 8 | g) << 8) | b | 0xff000000;
-
+	
 	y *= 2;	x *= 2;
+	x += 50;
+
 	unsigned y1 = y * (_width * 2 + 100);
 	uiPixels[y1 + x] = color;
 	uiPixels[y1 + x + 1] = color;
@@ -92,7 +94,6 @@ void VirtualTFT::DrawFastHLine(int x, int y, int w, Uint8 r, Uint8 g, Uint8 b)
 
 void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 	int x2, int y2, Uint8 r, Uint8 g, Uint8 blue) {
-
 
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1) {

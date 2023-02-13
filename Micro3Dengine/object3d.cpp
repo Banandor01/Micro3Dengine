@@ -12,7 +12,7 @@ template<class numT>
 Object3D<numT>::Object3D(const Vector3D<numT>* verts1, unsigned int vertN1, const Face* faces1, unsigned int faceN1) :
 	verts(verts1),	vertN(vertN1),
 	faces(faces1),	faceN(faceN1),
-	orientation(0, 0, 0),
+	rotation(0, 0, 0),
 	scale(1, 1, 1),
 	position(0,0,0)
 {
@@ -22,16 +22,16 @@ Object3D<numT>::Object3D(const Vector3D<numT>* verts1, unsigned int vertN1, cons
 
 template<class numT>
 void Object3D<numT>::SetRotation(numT x, numT y, numT z) {
-	orientation.X = x;
-	orientation.Y = y;
-	orientation.Z = z;
-	rotationMatrix.CreateRotationMatrix(x, y, z);
+	rotation.X = x;
+	rotation.Y = y;
+	rotation.Z = z;
 }
 
 template<class numT>
-void Object3D<numT>::SetRotationMatrix(Matrix3x3<numT> & rotMatrix)
-{
-	rotationMatrix = rotationMatrix;
+void Object3D<numT>::SetRotation(Vector3D<numT> rvect) {
+	rotation.X = rvect.X;
+	rotation.Y = rvect.Y;
+	rotation.Z = rvect.Z;
 }
 
 template<class numT>
@@ -60,8 +60,17 @@ void Object3D<numT>::SetScale(Vector3D<numT> scaleVector) {
 	scale = scaleVector;
 }
 
+template<class numT>
+void Object3D<numT>::UpdateModellToWorldMatrix()
+{	
+	m2w.SetRotation(rotation.X, rotation.Y, rotation.Z);
+	m2w.Set(3, 0,position.X);
+	m2w.Set(3, 1,position.Y);
+	m2w.Set(3, 2,position.Z);
+}
+
 template <class numT>
-void Object3D<numT>::ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
+void Object3D<numT>::ObjectToWorld(Camera<numT> *camera, Vector3D<numT>* rotatedVerts, unsigned int& num,
 								   Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling)
 {
 		
@@ -71,6 +80,8 @@ void Object3D<numT>::ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotated
 
 	unsigned offset = num;
 	numT xv, yv, zv;
+
+	UpdateModellToWorldMatrix();
 
 	// scale, rotate and move object according to its properties 
 	// TODO merge this opeariotns to one matrix
@@ -86,12 +97,11 @@ void Object3D<numT>::ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotated
 		zv = verts[i].Z * scale.Z;
 #endif
 		Vector3D<numT> vect(xv, yv, zv);
-		vect = vect * rotationMatrix;
-		vect += position;
-		
-		vect += camera.Position();
-		vect = vect * camera.Rotation();
-		
+		vect = vect * m2w;
+
+		if (camera != nullptr) {
+			vect = vect * camera->GetMatrix();
+		}
 		rotatedVerts[offset+i] = vect;
 	}
 	num += vertN;
@@ -103,34 +113,21 @@ void Object3D<numT>::ObjectToWorld(Camera<numT>& camera, Vector3D<numT>* rotated
 		face.vector1 = &rotatedVerts[faces[i].index1 + offset];
 		face.vector2 = &rotatedVerts[faces[i].index2 + offset];
 		face.vector3 = &rotatedVerts[faces[i].index3 + offset];
-
+		
 		// if the face is behind the camera we skip that face
-		if (face.vector1->Z < 0.2f && face.vector2->Z < 0.2f && face.vector3->Z < 0.2f)
-		{
-			continue;
-		}
-	
+		if (face.vector1->Z < 0.2f && face.vector2->Z < 0.2f && face.vector3->Z < 0.2f) { continue;	}
+		// primitiv clipping TODO make a real plane clipping
+		if (face.vector1->Z < 0.2f) { face.vector1->Z = 0.2f; }//face.color = &this->red; }
+		if (face.vector2->Z < 0.2f) { face.vector2->Z = 0.2f; }//face.color = &this->red; }
+		if (face.vector3->Z < 0.2f) { face.vector3->Z = 0.2f; }//face.color = &this->red; }			
+		
 		face.color = &this->color;
 
-		// primitiv clipping 
-		if (face.vector1->Z < 0.2f) {
-			face.vector1->Z = 0.2f;
-			//face.color = &this->red;
-		}
-
-		if (face.vector2->Z < 0.2f) {
-			face.vector2->Z = 0.2f; 
-			//face.color = &this->red;
-		}
-
-		if (face.vector3->Z < 0.2f) {
-			face.vector3->Z = 0.2f;
-			//face.color = &this->red;
-		}			
-
 		Vector3D<numT> normal = face.CalcualteNormal();
+		auto cameraToFace = *(face.vector1);
+
 		if (backfaceCulling) {			
-			if (normal.DotProduct(*face.vector1) < 0) {
+			if (normal.DotProduct(cameraToFace) < 0) {
 				facesOut[facesNum] = face;
 				facesNum++;
 			}
