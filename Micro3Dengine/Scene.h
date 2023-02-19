@@ -39,8 +39,8 @@ public:
 	Camera<numT>& Camera() { return camera; }
 	
 	// Object handling
-	void AddObject(Object3D<numT>* objectToAdd);
-	void RemoveObject(Object3D<numT>* objectToRemove);
+	void AddObject(Renderable<numT>* objectToAdd);
+	void RemoveObject(Renderable<numT>* objectToRemove);
 	
 	// The magic happens here 
 	void RenderObjects();
@@ -50,15 +50,15 @@ private:
 	// heap operation is used, not so beaty but safe
 	Vector3D<numT> vectors[MAXFACES];
 	Face3D <numT> faces[MAXFACES];
-	Object3D<numT>* objects[MAXOBJECTS];
+	Renderable<numT>* objects[MAXOBJECTS];
 	unsigned objectsNumber;
 
-	ProjectionMatrix<float> matrix;
+	ProjectionMatrix<numT> matrix;
 	VirtualTFT* renderer;
 
 private:
 	// helpers
 	static int compare(const void* a, const void* b);
 	void ShowInfo();
-	Object3D<float> cameraObject;
+	Object3D<numT> cameraObject;
 };

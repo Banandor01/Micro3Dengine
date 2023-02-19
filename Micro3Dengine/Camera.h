@@ -13,7 +13,7 @@ public:
 	void GoForward(numT zStep, numT xStep);
 	void UpdateMatrix();	// calculate Matrix
 	
-	Matrix3x3<numT>& GetRotationMatrix();
+	Mat33<numT>& GetRotationMatrix();
 	Vector3D<numT>& GetRotationVect();
 	Vector3D<numT>& Position();
 	Mat44<numT>& GetMatrix();
@@ -22,5 +22,5 @@ private:
 	Mat44<numT> matrix4;
 	Vector3D<numT> position;
 	Vector3D<numT> rotVect;
-	Matrix3x3<numT> rotation;
+	Mat33<numT> rotation;
 };

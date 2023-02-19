@@ -7,13 +7,13 @@
 
 
 /// <summary>
-/// Matrix3D
+/// Matrix3x3
 /// </summary>
-/// <typeparam name="numT"></typeparam>
+/// <typeparam name="numT">type of number</typeparam>
 template<class numT>
-class Matrix3x3 {
+class Mat33 {
 public:
-	Matrix3x3() {
+	Mat33() {
 		m00 = 1;  m10 = 0; m20 = 0;
 		m01 = 0;  m11 = 1; m21 = 0;
 		m02 = 0;  m12 = 0; m22 = 1;
@@ -35,7 +35,7 @@ public:
 		m02 = -siny;        m12 = cosy * sinx;                          m22 = cosx * cosy;
 	}
 
-	friend Vector3D<numT> operator*(const Vector3D<numT>& vec, const Matrix3x3& m)
+	friend Vector3D<numT> operator*(const Vector3D<numT>& vec, const Mat33& m)
 	{
 		numT x = m.m00 * vec.X + m.m10 * vec.Y + m.m20 * vec.Z;
 		numT y = m.m01 * vec.X + m.m11 * vec.Y + m.m21 * vec.Z;
@@ -43,9 +43,9 @@ public:
 		return Vector3D<numT>(x, y, z);
 	}
 
-	Matrix3x3<numT> operator* (const Matrix3x3& right)
+	Mat33<numT> operator* (const Mat33& right)
 	{
-		Matrix3x3<numT> nM;
+		Mat33<numT> nM;
 
 		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;
 		nM.m10 = m00 * right.m10 + m10 * right.m11 + m20 * right.m12;
@@ -162,8 +162,8 @@ public:
 		numT farmnear = far - near;
 
 		m00 = xScale;       m10 = 0;            m20 = 0;                        m30 = 0,
-			m01 = 0;            m11 = yScale;       m21 = 0;                        m31 = 0,
-			m02 = 0;            m12 = 0;            m22 = far / farmnear;           m32 = (-far * near) / farmnear;
+		m01 = 0;            m11 = yScale;       m21 = 0;                        m31 = 0,
+		m02 = 0;            m12 = 0;            m22 = far / farmnear;           m32 = (-far * near) / farmnear;
 		m03 = 0;            m13 = 0;            m23 = 1;                        m33 = 0;
 	}
 
@@ -232,6 +232,3 @@ private:
 
 	numT height, width;
 };
-
-
-

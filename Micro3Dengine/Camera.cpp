@@ -1,6 +1,8 @@
+
+#include "EngineConfig.h"
 #include "Camera.h"
 
-template class Camera<float>;
+template class Camera<NUMBERTYPE>;
 
 template<class numT>
 inline void Camera<numT>::SetPosition(const Vector3D<numT>& pos) {
@@ -39,7 +41,7 @@ Mat44<numT> & Camera<numT>::GetMatrix() {
 }
 
 template<class numT>
-Matrix3x3<numT>& Camera<numT>::GetRotationMatrix() {
+Mat33<numT>& Camera<numT>::GetRotationMatrix() {
 	return rotation;
 }
 template<class numT>
@@ -52,9 +54,9 @@ inline void Camera<numT>::LookDirection(Vector3D<numT> eye, Vector3D<numT> dir, 
 {
 	// Calculate new axises
 	//Vector3D<float> zaxis = (at - eye).Normalize();
-	Vector3D<float> zaxis = dir.Normalize();
-	Vector3D<float> xaxis = up.CrossProduct(zaxis).Normalize();
-	Vector3D<float> yaxis = zaxis.CrossProduct(xaxis).Normalize();
+	Vector3D<numT> zaxis = dir.Normalize();
+	Vector3D<numT> xaxis = up.CrossProduct(zaxis).Normalize();
+	Vector3D<numT> yaxis = zaxis.CrossProduct(xaxis).Normalize();
 
 	// Construc matrix	
 	auto m = matrix4.Elements();

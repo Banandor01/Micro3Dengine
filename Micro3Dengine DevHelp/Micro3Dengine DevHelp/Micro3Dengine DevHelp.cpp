@@ -14,12 +14,11 @@
 #include "MeshHelper.h"
 
 #include <Windows.h>
-
-
 using namespace std;
 
 void Init();
 void Loop();
+void UpdateObjects(float ellapsed);
 
 int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
@@ -33,6 +32,9 @@ int WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int n
 Application<float> app;
 VirtualTFT tft(320, 240);
 Scene<float> scene(320, 240);
+DynamicMesh<float> mesh(scene, app);
+
+
 
 // Declare the 3D object(s) we want to render
 // Micro3Dengine is for Micro Controllers so in this example we are not using any dynamic memory allocation 
@@ -55,8 +57,21 @@ void Init()
 		cubes[i]->SetScale(4, -4, 4);
 		scene.AddObject(cubes[i]);
 	}
+}
 
-	CreateMesh(scene);
+void Loop()
+{
+	float zr = 0;
+	scene.SetCameraPosition(0, 5, 0);
+	while (app.Run())
+	{
+		app.HandleEvents(scene.Camera());		// Handle key event and move and rotate the camera
+		mesh.UpdateMesh();
+		
+		zr += 0.5f;
+		UpdateObjects(zr);
+		scene.RenderObjects();
+	}
 }
 
 void UpdateObjects(float ellapsed) {
@@ -73,19 +88,5 @@ void UpdateObjects(float ellapsed) {
 	}
 }
 
-void Loop()
-{
-	float zr = 0;
-	scene.SetCameraPosition(0, 5, 0);
-	while (app.Run())
-	{
-		app.HandleEvents(scene.Camera());		// Handle key event and move and rotate the camera
-		zr += 0.5f;
-		UpdateObjects(zr);
-		scene.RenderObjects();
-	}
-}
-
 // If you want to understand the whole process the below link is very, very usefull 
 // http://www.opengl-tutorial.org/hu/beginners-tutorials/tutorial-3-matrices/
-

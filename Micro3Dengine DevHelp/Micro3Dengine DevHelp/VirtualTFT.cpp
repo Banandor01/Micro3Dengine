@@ -97,16 +97,32 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1) {
-		swap(y0, y1, int); swap(x0, x1, int);
+		swap(y0, y1, int); swap(x0, x1);
 	}
 	if (y1 > y2) {
-		swap(y2, y1, int); swap(x2, x1, int);
+		swap(y2, y1, int); swap(x2, x1);
 	}
 	if (y0 > y1) {
-		swap(y0, y1, int); swap(x0, x1, int);
+		swap(y0, y1, int); swap(x0, x1);
 	}
 
 	// scanline algorithm
+
+/*	unsigned start;
+	if (y0 < 0) { start = 0; }
+	else
+	{
+		if (y0 < _height) { start = y0; }
+		else { return; }
+	}
+	unsigned stop;
+	if (y2 >= _height) { stop = _height; }
+	else
+	{
+		if (y2 > 0) {stop = y2;}
+		else { return; }
+	} */
+
 	for (int actualLine = 0; actualLine < _height; actualLine++)
 	{
 		if (actualLine < y0 || actualLine > y2) continue;
@@ -133,7 +149,6 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 			if (right >= _width) right = _width - 1;
 
 			DrawFastHLine(left, actualLine, right - left, r, g, blue);
-
 		}
 		else
 		{	// triangle lower part

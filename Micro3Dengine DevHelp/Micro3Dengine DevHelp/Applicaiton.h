@@ -10,32 +10,22 @@ template<class numT>
 class Application
 {
 public:
-	Application() :
-		run(true), x(0), y(0), z(0),
-		xStep(0), yStep(0), zStep(0),
-		roll(0),yaw(0), pitch(0),
-		rollStep(0), yawStep(0),
-		speed (0)
-	{}	
+	Application();
 
 	bool HandleEvents(Camera<numT> & camera);
-	
+
 	bool Run() { return run; }
-
-	float X() { return x; }
-	float Y() { return y; }
-	float Z() { return z; }
-
-	float Yaw()  { return yaw; }
-	float Roll() { return roll; }
-	float Pitch() { return pitch; }
+	numT Yaw()  { return yaw; }
+	numT Roll() { return roll; }
+	numT Pitch() { return pitch; }
+	numT Rot() { return t; }			// only for tsting
+		
 private:
-	float xStep, yStep, zStep;
-	float yawStep, rollStep;
+	numT xStep, zStep;
+	numT yawStep, rollStep, pitchStep;
+	numT yaw, roll, pitch;
+	numT ts, t; // just for test
+	numT speed;
 
-	float x, y, z;
-	float yaw, roll, pitch;
-	
-	float speed;
 	bool run;
 };

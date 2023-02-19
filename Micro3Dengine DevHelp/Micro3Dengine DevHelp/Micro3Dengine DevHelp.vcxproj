@@ -134,10 +134,12 @@
   <ItemGroup>
     <ClCompile Include="..\..\Micro3Dengine\Camera.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Color.cpp" />
+    <ClCompile Include="..\..\Micro3Dengine\Face.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\object3d.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Scene.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Vectors.cpp" />
     <ClCompile Include="Applicaiton.cpp" />
+    <ClCompile Include="MeshHelper.cpp" />
     <ClCompile Include="Micro3Dengine DevHelp.cpp" />
     <ClCompile Include="perlin.cpp" />
     <ClCompile Include="VirtualTFT.cpp" />
@@ -145,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\Micro3Dengine\Camera.h" />
     <ClInclude Include="..\..\Micro3Dengine\Color.h" />
+    <ClInclude Include="..\..\Micro3Dengine\EngineConfig.h" />
     <ClInclude Include="..\..\Micro3Dengine\Face.h" />
     <ClInclude Include="..\..\Micro3Dengine\fixpoint.h" />
     <ClInclude Include="..\..\Micro3Dengine\Matrices.h" />

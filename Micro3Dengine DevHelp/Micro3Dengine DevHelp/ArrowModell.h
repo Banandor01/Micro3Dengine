@@ -1,6 +1,6 @@
 #pragma once
 
-#include "..\..\Micro3Dengine\Face.h";
+#include "..\..\Micro3Dengine\Face.h"
 
 const Vector3D<float> Cubevectors2[14] =
 {
@@ -26,8 +26,6 @@ const Vector3D<float> Cubevectors2[14] =
 
 };
 
-
-// create the indices using an int array
 const Face cubeFaces2[6] =
 {
 	{0, 2, 1},

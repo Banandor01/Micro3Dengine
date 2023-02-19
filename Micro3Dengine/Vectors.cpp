@@ -1,8 +1,9 @@
+#include "EngineConfig.h"
+
 #include "Vectors.h"
 #include <math.h>
 
-
-template class Vector3D<float>;
+template class Vector3D<NUMBERTYPE>;
 
 template<class numT>
 Vector2D<numT> Vector2D<numT>::operator+(const Vector2D<numT>& right) const
@@ -134,13 +135,13 @@ Vector3D<numT> Vector3D<numT>::operator/(const Vector3D& right) const
 template<class numT>
 Vector3D<numT> Vector3D<numT>::operator*(numT right) const
 {
-	return Vector3D(X * right, Y * right, Z / right);
+	return Vector3D(X * right, Y * right, Z * right);
 }
 
 template<class numT>
 Vector3D<numT> Vector3D<numT>::operator/(numT right) const
 {
-	return Vector3D(X / right, X / right, Z / right);
+	return Vector3D(X / right, Y / right, Z / right);
 }
 
 template<class numT>

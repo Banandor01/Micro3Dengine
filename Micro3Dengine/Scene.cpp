@@ -1,6 +1,8 @@
+
+#include "EngineConfig.h"
 #include "Scene.h"
 
-template class Scene<float>;
+template class Scene<NUMBERTYPE>;
 
 template<class numT>
 void Scene<numT>::RenderObjects() {
@@ -75,7 +77,7 @@ int Scene<numT>::compare(const void* a, const void* b)
 }
 
 template<class numT>
-void Scene<numT>::AddObject(Object3D<numT>* objectToAdd) {
+void Scene<numT>::AddObject(Renderable<numT>* objectToAdd) {
 	// TODO show the error
 	if (objectsNumber < MAXOBJECTS) {
 		objects[objectsNumber] = objectToAdd;
@@ -84,7 +86,7 @@ void Scene<numT>::AddObject(Object3D<numT>* objectToAdd) {
 }
 
 template<class numT>
-void Scene<numT>::RemoveObject(Object3D<numT>* objectToRemove) {
+void Scene<numT>::RemoveObject(Renderable<numT>* objectToRemove) {
 	unsigned i = 0;
 	for (; i < objectsNumber; i++) {
 		if (objects[i] == objectToRemove) {
