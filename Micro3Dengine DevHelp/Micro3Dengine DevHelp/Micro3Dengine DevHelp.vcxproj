@@ -132,9 +132,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Micro3Dengine\Airplane.cpp" />
+    <ClCompile Include="..\..\Micro3Dengine\AirplaneObj.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Camera.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Color.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Face.cpp" />
+    <ClCompile Include="..\..\Micro3Dengine\Matrix.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\object3d.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Scene.cpp" />
     <ClCompile Include="..\..\Micro3Dengine\Vectors.cpp" />
@@ -145,12 +148,15 @@
     <ClCompile Include="VirtualTFT.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Micro3Dengine\Airplane.h" />
+    <ClInclude Include="..\..\Micro3Dengine\AirplaneObj.h" />
     <ClInclude Include="..\..\Micro3Dengine\Camera.h" />
     <ClInclude Include="..\..\Micro3Dengine\Color.h" />
     <ClInclude Include="..\..\Micro3Dengine\EngineConfig.h" />
     <ClInclude Include="..\..\Micro3Dengine\Face.h" />
     <ClInclude Include="..\..\Micro3Dengine\fixpoint.h" />
-    <ClInclude Include="..\..\Micro3Dengine\Matrices.h" />
+    <ClInclude Include="..\..\Micro3Dengine\interfaces\MovableBase.h" />
+    <ClInclude Include="..\..\Micro3Dengine\Matrix.h" />
     <ClInclude Include="..\..\Micro3Dengine\object3d.h" />
     <ClInclude Include="..\..\Micro3Dengine\Scene.h" />
     <ClInclude Include="..\..\Micro3Dengine\Vectors.h" />

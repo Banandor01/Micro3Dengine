@@ -23,8 +23,14 @@ void VirtualTFT::ClearFrame(Uint8 r, Uint8 g, Uint8 b)
 	    // can't ignore pitch, it might be wider than UI_WIDTH
 	}
 
-	Uint32 color = ((r << 8 | g) << 8) | b | 0xff000000;
-	memset(uiPixels, color, (_width *2 + 100) * (_height * 2 + 100) * 4);
+	for (unsigned i = 0; i < 22; i++) {
+		for (unsigned y = 0; y < 20; y++) {
+			DrawFastHLine(0, i * 10 + y, _width, 10, 10 + i *5, 50 + i * 8);
+		}
+	}
+
+	//Uint32 color = ((r << 8 | g) << 8) | b | 0xff000000;
+	//memset(uiPixels, color, (_width *2 + 100) * (_height * 2 + 100) * 4);
 }
 
 void VirtualTFT::UpdateFrame()
@@ -80,15 +86,12 @@ void VirtualTFT::DrawFastHLine(int x, int y, int w, Uint8 r, Uint8 g, Uint8 b)
 	y *= 2; x *= 2;
 	x += 50;
 
-	unsigned y1 = y * (_width * 2 + 100);
+	unsigned y1 = y * (_width * 2 + 100) + x;
+	unsigned y2 = (y+1) * (_width * 2 + 100) +x;
 
 	for (unsigned i = x; i < x + w * 2; i++) {
-		uiPixels[y1 + i] = c;
-	}
-	y++;
-	y1 = y * (_width * 2 + 100);
-	for (unsigned i = x; i < x + w * 2; i++) {
-		uiPixels[y1 + i] = c;
+		uiPixels[y1++] = c;
+		uiPixels[y2++] = c;
 	}
 }
 
@@ -97,18 +100,26 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 
 	// Sort coordinates by Y order (y2 >= y1 >= y0)
 	if (y0 > y1) {
-		swap(y0, y1, int); swap(x0, x1);
+		swap(y0, y1); swap(x0, x1);
 	}
 	if (y1 > y2) {
-		swap(y2, y1, int); swap(x2, x1);
+		swap(y2, y1); swap(x2, x1);
 	}
 	if (y0 > y1) {
-		swap(y0, y1, int); swap(x0, x1);
+		swap(y0, y1); swap(x0, x1);
 	}
 
-	// scanline algorithm
+	float dx02 = x2 - x0;
+	float dy02 = y2 - y0;
 
-/*	unsigned start;
+	float  dx01 = x1 - x0;
+	float  dy01 = y1 - y0;
+
+	float dx12 = x2 - x1;
+	float dy12 = y2 - y1;
+
+	// scanline algorithm
+	unsigned start;
 	if (y0 < 0) { start = 0; }
 	else
 	{
@@ -116,45 +127,36 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 		else { return; }
 	}
 	unsigned stop;
-	if (y2 >= _height) { stop = _height; }
+	if (y2 >= _height)	{ stop = _height; }
 	else
 	{
-		if (y2 > 0) {stop = y2;}
-		else { return; }
-	} */
+		if (y2 > 0) {	stop = y2;}
+		else {	return; }
+	} 
 
-	for (int actualLine = 0; actualLine < _height; actualLine++)
+	
+	for (int actualLine = start; actualLine < stop; actualLine++)
 	{
-		if (actualLine < y0 || actualLine > y2) continue;
-
-		float dx02 = x2 - x0;
-		float dy02 = y2 - y0;
-
 		// triangle upper part
 		if (actualLine >= y0 && actualLine < y1) {
 			int actualYStep = actualLine - y0;
-
-			float  dx01 = x1 - x0,
-				dy01 = y1 - y0;
-
+			
 			int left = x0, right = x0;
-			if (dy01 != 0) left = x0 + dx01 / dy01 * actualYStep;
+			if (dy01 != 0) left = x0 + dx01  / dy01 * actualYStep;
 			if (dy02 != 0) right = x0 + dx02 / dy02 * actualYStep;
 
-			if (left > right) { swap(left, right, int); }
-
-			if (right < 0 && left>= _width) continue; // TODO
-						
-			if (left < 0) left = 0;
-			if (right >= _width) right = _width - 1;
-
+			if (left > right) { swap(left, right); }
+			
+			if (right < 0) { right = 0; }
+			else if (right >= _width) { right = _width - 1; }
+												
+			if (left < 0) { left = 0; }
+			else if (left >= _width) { left = _width - 1; }
+				
 			DrawFastHLine(left, actualLine, right - left, r, g, blue);
 		}
 		else
 		{	// triangle lower part
-			float dx12 = x2 - x1;
-			float dy12 = y2 - y1;
-
 			int left = x0, right = x1;
 			int stepy02 = actualLine - y0;
 			int stepy12 = actualLine - y1;
@@ -163,11 +165,13 @@ void VirtualTFT::FillTriangle(int x0, int y0, int x1, int y1,
 			if (dy12 != 0) right = x1 + dx12 / dy12 * stepy12;
 
 			if (left > right) { swap(left, right, int); }
+			
+			if (right < 0) { right = 0; }
+			else if (right >= _width) { right = _width - 1; }
 
-			if (right < 0 && left >= _width) continue;
-			if (left < 0) left = 0;
-			if (right >= _width) right = _width - 1;
-
+			if (left < 0) { left = 0; }
+			else if (left >= _width) { left = _width - 1; }
+			
 			DrawFastHLine(left, actualLine, right -left, r, g, blue);
 		}
 	}

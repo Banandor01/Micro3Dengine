@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Matrices.h"
+#include "Matrix.h"
 
 template<class numT>
 class Camera
@@ -13,8 +13,8 @@ public:
 	void GoForward(numT zStep, numT xStep);
 	void UpdateMatrix();	// calculate Matrix
 	
-	Mat33<numT>& GetRotationMatrix();
-	Vector3D<numT>& GetRotationVect();
+	Mat33<numT>& RotationMatrix();
+	Vector3D<numT>& RotationVect();
 	Vector3D<numT>& Position();
 	Mat44<numT>& GetMatrix();
 private:

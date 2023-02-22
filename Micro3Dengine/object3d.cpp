@@ -5,7 +5,7 @@
 #include "EngineConfig.h"
 #include "object3d.h"
 #include "Vectors.h"
-#include "Matrices.h"
+#include "Matrix.h"
 #include "Face.h"
 #include "Camera.h"
 
@@ -69,6 +69,7 @@ template<class numT>
 void Renderable<numT>::UpdateModellToWorldMatrix()
 {	
 	m2w.SetRotation(rotation.X, rotation.Y, rotation.Z);
+
 	m2w.Set(3, 0,position.X);
 	m2w.Set(3, 1,position.Y);
 	m2w.Set(3, 2,position.Z);

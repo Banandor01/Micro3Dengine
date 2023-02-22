@@ -51,6 +51,15 @@
     <ClCompile Include="..\..\Micro3Dengine\Face.cpp">
       <Filter>Micro3Dengine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Micro3Dengine\AirplaneObj.cpp">
+      <Filter>Micro3Dengine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Micro3Dengine\Airplane.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Micro3Dengine\Matrix.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="VirtualTFT.h">
@@ -68,7 +77,7 @@
     <ClInclude Include="..\..\Micro3Dengine\Face.h">
       <Filter>Micro3Dengine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Micro3Dengine\Matrices.h">
+    <ClInclude Include="..\..\Micro3Dengine\Matrix.h">
       <Filter>Micro3Dengine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Micro3Dengine\object3d.h">
@@ -100,6 +109,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Micro3Dengine\EngineConfig.h">
       <Filter>Micro3Dengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Micro3Dengine\AirplaneObj.h">
+      <Filter>Micro3Dengine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Micro3Dengine\interfaces\MovableBase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Micro3Dengine\Airplane.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -41,11 +41,11 @@ Mat44<numT> & Camera<numT>::GetMatrix() {
 }
 
 template<class numT>
-Mat33<numT>& Camera<numT>::GetRotationMatrix() {
+Mat33<numT>& Camera<numT>::RotationMatrix() {
 	return rotation;
 }
 template<class numT>
-Vector3D<numT>& Camera<numT>::GetRotationVect() {
+Vector3D<numT>& Camera<numT>::RotationVect() {
 	return rotVect; 
 }
 

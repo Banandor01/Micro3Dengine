@@ -1,15 +1,17 @@
 
 #include "EngineConfig.h"
 #include "Scene.h"
+#include "Camera.h"
 
 template class Scene<NUMBERTYPE>;
 
 template<class numT>
-void Scene<numT>::RenderObjects() {
-
+void Scene<numT>::RenderObjects() 
+{
+	camera.UpdateMatrix();
 	unsigned faceN = 0;
 	unsigned vectorsN = 0;
-
+	
 	for (unsigned i = 0; i < objectsNumber; i++) {
 		objects[i]->ObjectToWorld(&camera, vectors, vectorsN, faces, faceN, true);
 	}
@@ -17,7 +19,7 @@ void Scene<numT>::RenderObjects() {
 	// Just for test
 	cameraObject.SetScale(0.1f, 0.1f, 0.1f);
 	cameraObject.SetPosition(2.3f, 0.9f, 2);
-	cameraObject.SetRotation(-90, 0, -camera.GetRotationVect().Y);
+	cameraObject.SetRotation(-90, 0, -camera.RotationVect().Y);
 	cameraObject.ObjectToWorld(nullptr, vectors, vectorsN, faces, faceN, true);
 	// just for test end
 
@@ -32,7 +34,7 @@ void Scene<numT>::RenderObjects() {
 
 	for (unsigned i = 0; i < faceN; i++)
 	{
-		float light = faces[i].normalVector.DotProduct(Vector3D<numT>(0, 0.5f, -0.5f));
+		float light = faces[i].normalVector.DotProduct(Vector3D<numT>(0, 0.6f, -0.6f));
 		if (light < 0.1f) light = 0.1;
 		Color color = *faces[i].color;
 		renderer->FillTriangle<float>(faces[i], color.SetBrightness(light));
@@ -48,16 +50,24 @@ void Scene<numT>::ShowInfo()
 	unsigned w = 500 /10;
 	unsigned h = 500 /10;
 	unsigned h0 = h;
+	
+	
 	renderer->DrawLine(270, h0, 319, h0,0,0,255);
 	renderer->DrawLine(270, 0, 319, 0, 0, 0, 255);
 
 	renderer->DrawLine(270, 0, 270, h0,0,0,255);
 	renderer->DrawLine(319, 0, 319, h0,0,0,255);
 
-	unsigned x = camera.Position().X / 10;
-	unsigned z = camera.Position().Z / 10;
+	unsigned x = camera.Position().X / 100;
+	unsigned z = camera.Position().Z / 100;
 
 	renderer->DrawPixel( 295 + x, h0 - z, 255, 255, 255);
+
+	x = 0;
+	z = 2000 / 100;
+
+	renderer->DrawPixel(295 + x, h0 - z, 255, 255, 255);
+
 }
 
 // helpers

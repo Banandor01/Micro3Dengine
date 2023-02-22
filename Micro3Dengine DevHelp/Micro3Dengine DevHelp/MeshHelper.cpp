@@ -8,14 +8,14 @@ template class SquareMesh<NUMBERTYPE>;
 template<class numT>
 inline DynamicMesh<numT>::DynamicMesh(Scene<numT>& scene1, Application<numT>& application) :
 	meshPointDistance(40),
-	perlin(6, 14, 280, 125),
+	perlin(8, 14, 350, 49),
 	scene(scene1),
 	application(application),
 	visibleMeshes(0)
 {
 	for (unsigned i = 0; i < 40; i++) {
 			meshes[i].SetMeshPointDistance(meshPointDistance);
-			meshes[i].SetColor(Color(100, 100, 255));
+			meshes[i].SetColor(Color(205, 127, 50));
 			meshes[i].Visible(false);
 			scene.AddObject(&meshes[i]);
 	}
@@ -31,7 +31,7 @@ void DynamicMesh<numT>::UpdateMesh() {
 	int xMeshIndex = round(scene.Camera().Position().X / meshSize);
 
 	Mat33<numT> rot;
-	auto cv = scene.Camera().GetRotationVect();
+	auto cv = scene.Camera().RotationVect();
 	rot.CreateRotationMatrix(cv.X, cv.Y, cv.Z);
 	Vector3D<numT> dir(0, 0, 1);
 	dir = dir * rot;
@@ -148,8 +148,8 @@ void SquareMesh<numT>::CreateMesh(Perlin& perlin, Vector3D<numT>& pos, int offse
 		index = 0;
 		for (int z = 0; z < 10; z++) {
 			for (int x = 0; x < 10; x++) {
-				faces[index++] = Face(z * 11 + x, z * 11 + x + 1, z * 11 + 11 + x);
-				faces[index++] = Face(z * 11 + x + 1, z * 11 + 11 + x + 1, z * 11 + 11 + x);
+				faces[index++] = Face(z * 11 + x +1, z * 11 + x, z * 11 + 11 + x);
+				faces[index++] = Face(z * 11 + x + 1, z * 11 + 11 + x, z * 11 + 11 + x+1);
 			}
 		}
 	}

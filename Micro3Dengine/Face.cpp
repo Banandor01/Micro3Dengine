@@ -17,8 +17,8 @@ Face3D<numT>::Face3D() : color(nullptr)
 
 template<class numT>
 Vector3D<numT> Face3D<numT>::CalcualteNormal() {
-	Vector3D<numT> lineA = *vector2 - *vector1;
-	Vector3D<numT> lineB = *vector3 - *vector1;
+	Vector3D<numT> lineB = *vector2 - *vector1;
+	Vector3D<numT> lineA = *vector3 - *vector1;
 
 	normalVector = lineB.CrossProduct(lineA);
 	normalVector.Normalize();

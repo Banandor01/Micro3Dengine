@@ -1,21 +1,20 @@
 #include "Applicaiton.h"
 
 #include "../../Micro3Dengine/EngineConfig.h"
-#include "../../Micro3Dengine/Camera.h"
+#include "../../Micro3Dengine/Interfaces/MovableBase.h"
 
 template class Application<NUMBERTYPE>;
 
 template<class numT>
 inline Application<numT>::Application() :
 	run(true),
-	xStep(0), zStep(0),
-	roll(0), yaw(0), pitch(0), t(0),
+	t(0), ts(0),
 	rollStep(0), yawStep(0), pitchStep(0),
-	speed(0), ts(0)
+	speed(0)
 {}
 
 template<class numT>
-bool Application<numT>::HandleEvents(Camera<numT>& camera) {
+bool Application<numT>::HandleEvents(MovableBase<numT>& player) {
 	SDL_Event event;
 	SDL_PollEvent(&event);
 	switch (event.type) {
@@ -24,10 +23,8 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 		run = false;
 		break;
 	case SDL_KEYUP:
-		xStep = zStep;
-		yawStep = 0; zStep = 0;
-		rollStep = 0; pitchStep = 0;
-		ts = 0;
+		yawStep = 0; rollStep = 0; pitchStep = 0;
+		ts = 0; speedStep = 0;
 		break;
 	case SDL_KEYDOWN:
 
@@ -37,13 +34,14 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 		case SDLK_2:
 			break;
 
-		case SDLK_UP:	 pitchStep = 0.4f;
+		case SDLK_UP:	 pitchStep = 0.8f;
 			break;
-		case SDLK_DOWN:  pitchStep = -0.4f;
+		case SDLK_DOWN:  pitchStep = -0.8f;
 			break;
-		case SDLK_LEFT:  rollStep = +0.2f;
+
+		case SDLK_LEFT:  rollStep = +1.0f;
 			break;
-		case SDLK_RIGHT: rollStep = -0.2f;
+		case SDLK_RIGHT: rollStep = -1.0f;
 			break;
 
 		case SDLK_a: yawStep = -0.4f;
@@ -51,9 +49,9 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 		case SDLK_d: yawStep = 0.4f;
 			break;
 
-		case SDLK_w: zStep = 0.4f;
+		case SDLK_w: speedStep = 0.01f;
 			break;
-		case SDLK_s: zStep = -0.4f;
+		case SDLK_s: speedStep = -0.01f;
 			break;
 		case SDLK_x: speed = 0;
 			break;
@@ -66,18 +64,17 @@ bool Application<numT>::HandleEvents(Camera<numT>& camera) {
 		}
 	}
 
-	if (speed <= 2.5f && speed >= -1.4f) (speed += zStep);
-	if (speed >= 2.5f) speed = 2.5f;
+	if (yawStep != 0 || rollStep != 0 || pitchStep != 0) {
+		player.Roll(rollStep);
+		player.Pitch(pitchStep);
+		player.Yaw(yawStep);
+	}
+
+	if (speed <= 15.0f && speed >= -1.4f) (speed += speedStep);
+	if (speed >= 15.0f) speed = 15;
 	if (speed <= -1.4) speed = -1.4;
 
-	roll += rollStep;
-	yaw += yawStep; // +roll / 200;
-	pitch += pitchStep;
-	t += ts;
-
-	camera.SetRotation(Pitch(), Yaw(), Roll());
-	camera.UpdateMatrix();
-	camera.GoForward(speed, 0);
+	player.GoForward(speed);
 
 	return true;
 }

@@ -61,8 +61,8 @@ private:
 
     ILogger* _logger;
 
-    unsigned int _width;
-    unsigned int _height;
+    int _width;
+    int _height;
     
     SDL_Window*   _window;
     SDL_Renderer* _renderer;

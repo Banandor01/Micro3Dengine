@@ -33,9 +33,6 @@ public:
 
 	void SetRenderer(VirtualTFT* tft) { renderer = tft;	}
 
-	// Camera handling
-	void SetCameraRotation(numT x, numT y, numT z) { camera.SetRotation(x, y, z); }
-	void SetCameraPosition(numT x, numT y, numT z) { camera.SetPosition(Vector3D<numT>(x, y, z)); }
 	Camera<numT>& Camera() { return camera; }
 	
 	// Object handling
