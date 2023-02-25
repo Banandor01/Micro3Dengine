@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SDL.h"
+#include "Airplane.h"
 
 template<class numT>
 class MovableBase;
@@ -11,7 +12,7 @@ class Application
 public:
 	Application();
 
-	bool HandleEvents(MovableBase<numT> & player);
+	bool HandleEvents(Airplane<numT> & player);
 	bool Run() { return run; }
 
 private:

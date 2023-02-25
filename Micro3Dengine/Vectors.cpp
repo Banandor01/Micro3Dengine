@@ -105,9 +105,6 @@ numT Vector2D<numT>::DotProduct(const Vector2D<numT>& left, const Vector2D<numT>
 /// <summary>
 /// Vectro3D implementation
 /// </summary>
-/// <typeparam name="numT"></typeparam>
-/// <param name="right"></param>
-/// <returns></returns>
 template<class numT>
 Vector3D<numT> Vector3D<numT>::operator+(const Vector3D& right) const
 {

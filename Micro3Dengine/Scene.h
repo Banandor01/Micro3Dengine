@@ -5,7 +5,7 @@
 #include "object3d.h"
 
 #include "../Micro3Dengine DevHelp/Micro3Dengine DevHelp/VirtualTFT.h"
-#include "../Micro3Dengine DevHelp/Micro3Dengine DevHelp/ArrowModell.h"
+#include "../Micro3Dengine DevHelp/Micro3Dengine DevHelp/models.h"
 
 #define MAXOBJECTS 1000
 #define MAXFACES  100000
@@ -16,16 +16,16 @@ class Scene
 	Camera<numT> camera;
 public:
 	Scene() : objectsNumber(0),
-		cameraObject(&Cubevectors2[0], _countof(Cubevectors2), &cubeFaces2[0], _countof(cubeFaces2))
+		cameraObject(&Cubevectors[0], _countof(Cubevectors), &cubeFaces[0], _countof(cubeFaces))
 	{}
 	Scene(unsigned width, unsigned height) :
-		cameraObject(&Cubevectors2[0], _countof(Cubevectors2), &cubeFaces2[0], _countof(cubeFaces2))
+		cameraObject(&Cubevectors[0], _countof(Cubevectors), &cubeFaces[0], _countof(cubeFaces))
 	{
 		objectsNumber = 0;
 		matrix.CreatePerspective(90, width, height, 0.1, 1000);
 	};
 	Scene(VirtualTFT* renderer) : renderer(renderer) ,
-		cameraObject(&Cubevectors2[0], _countof(Cubevectors2), &cubeFaces2[0], _countof(cubeFaces2)) 
+		cameraObject(&Cubevectors[0], _countof(Cubevectors), &cubeFaces[0], _countof(cubeFaces)) 
 	{
 		objectsNumber = 0;
 		matrix.CreatePerspective(90, renderer->Width(), renderer->Height(), 0.1, 1000);

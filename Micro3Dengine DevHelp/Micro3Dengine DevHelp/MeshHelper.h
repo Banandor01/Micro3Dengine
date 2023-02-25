@@ -8,6 +8,8 @@
 #include <vector> 
 #include "perlin.h"
 #include "Applicaiton.h"
+#include "TreeObj.h"
+
 
 template<class numT>
 class SquareMesh;
@@ -49,6 +51,9 @@ private:
 	bool visible;
 
 	int oldx, oldz;
+
+	TreeObj<numT> trees[10];
+
 };
 
 

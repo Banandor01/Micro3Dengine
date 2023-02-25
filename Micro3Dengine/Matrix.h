@@ -5,7 +5,6 @@
 
 #define M_PI 3.14159
 
-
 /// Matrix3x3
 template<class numT>
 class Mat33 {
@@ -37,10 +36,9 @@ public:
 	Mat44()
 	{
 		for (unsigned i = 0; i < 16; el[i++] = 0);
-
-		el[0] = 1;
-		el[5] = 1;
-		el[10] = 1;
+//		el[0] = 1;
+//		el[5] = 1;
+//		el[10] = 1;
 	}
 
 	numT* Elements() {
@@ -63,43 +61,43 @@ public:
 	}
 
 	// Create a rotation matrix
-	void SetRotation(numT x, numT y, numT z) {
+	void SetRotation(numT x, numT y, numT z);
 
-		numT x2 = x * M_PI / 180;
-		numT y2 = y * M_PI / 180;
-		numT z2 = z * M_PI / 180;
-
-		numT cosz = cos(z2);    numT sinz = sin(z2);
-		numT siny = sin(y2);    numT cosy = cos(y2);
-		numT sinx = sin(x2);    numT cosx = cos(x2);
-
-		el[0] = cosy * cosz;  el[1] = cosz * sinx * siny - cosx * sinz;     el[2] = cosx * cosz * siny + sinx * sinz; el[3] = 0;
-		el[4] = cosy * sinz;  el[5] = cosx * cosz + sinx * siny * sinz;     el[6] = cosx * siny * sinz - cosz * sinx; el[7] = 0;
-		el[8] = -siny;        el[9] = cosy * sinx;                          el[10] = cosx * cosy;					  el[11] = 0;
-		el[12] = 0;			  el[13] = 0;									el[14] = 0;								  el[15] = 0;
-	}
-
-
-	/*
-	Matrix4x4<numT> operator* (const Matrix3x3& right)
+	Mat44<numT> operator* (const Mat44& right)
 	{
-		Matrix3x3<numT> nM;
+		Mat44<numT> nM;
 
-		nM.m00 = m00 * right.m00 + m10 * right.m01 + m20 * right.m02;
-		nM.m10 = m00 * right.m10 + m10 * right.m11 + m20 * right.m12;
-		nM.m20 = m00 * right.m20 + m10 * right.m21 + m20 * right.m22;
 
-		nM.m01 = m01 * right.m00 + m11 * right.m01 + m21 * right.m02;
-		nM.m11 = m01 * right.m10 + m11 * right.m11 + m21 * right.m12;
-		nM.m21 = m01 * right.m20 + m11 * right.m21 + m21 * right.m22;
+		for (unsigned x = 0; x < 4; x++) {
+			nM.el[0] += el[x] * right.el[x * 4];
+			nM.el[1] += el[x] * right.el[x * 4+1];
+			nM.el[2] += el[x] * right.el[x * 4 + 2];
+			nM.el[3] += el[x] * right.el[x * 4 + 3];
+		}
 
-		nM.m02 = m02 * right.m00 + m12 * right.m01 + m22 * right.m02;
-		nM.m12 = m02 * right.m10 + m12 * right.m11 + m22 * right.m12;
-		nM.m22 = m02 * right.m20 + m12 * right.m21 + m22 * right.m22;
+		for (unsigned x = 0; x < 4; x++) {
+			nM.el[4] += el[x+4] * right.el[x * 4];
+			nM.el[5] += el[x+4] * right.el[x * 4 + 1];
+			nM.el[6] += el[x+4] * right.el[x * 4 + 2];
+			nM.el[7] += el[x+4] * right.el[x * 4 + 3];
+		}
 
+		for (unsigned x = 0; x < 4; x++) {
+			nM.el[8] += el[x + 8] * right.el[x * 4];
+			nM.el[9] += el[x + 8] * right.el[x * 4 + 1];
+			nM.el[10] += el[x + 8] * right.el[x * 4 + 2];
+			nM.el[11] += el[x + 8] * right.el[x * 4 + 3];
+		}
+
+		for (unsigned x = 0; x < 4; x++) {
+			nM.el[12] += el[x + 12] * right.el[x * 4];
+			nM.el[13] += el[x + 12] * right.el[x * 4 + 1];
+			nM.el[14] += el[x + 12] * right.el[x * 4 + 2];
+			nM.el[15] += el[x + 12] * right.el[x * 4 + 3];
+		}
 		return nM;
 	}
-	*/
+	
 
 
 private:
@@ -193,3 +191,4 @@ private:
 
 	numT height, width;
 };
+

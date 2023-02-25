@@ -5,6 +5,7 @@
 
 template class Scene<NUMBERTYPE>;
 
+int v = 0;
 template<class numT>
 void Scene<numT>::RenderObjects() 
 {
@@ -15,13 +16,13 @@ void Scene<numT>::RenderObjects()
 	for (unsigned i = 0; i < objectsNumber; i++) {
 		objects[i]->ObjectToWorld(&camera, vectors, vectorsN, faces, faceN, true);
 	}
-
-	// Just for test
-	cameraObject.SetScale(0.1f, 0.1f, 0.1f);
-	cameraObject.SetPosition(2.3f, 0.9f, 2);
-	cameraObject.SetRotation(-90, 0, -camera.RotationVect().Y);
-	cameraObject.ObjectToWorld(nullptr, vectors, vectorsN, faces, faceN, true);
-	// just for test end
+		
+	//// Just for test
+	//cameraObject.SetScale(0.1, 0.1, 0.1);
+	//cameraObject.SetPosition(2.3f, 1.1f, 2);
+	//cameraObject.SetRotation(camera.RotationVect());
+	//cameraObject.ObjectToWorld(nullptr, vectors, vectorsN, faces, faceN, true);
+	//// just for test end
 
 	qsort(faces, faceN, sizeof(Face3D<float>), Scene::compare);
 	matrix.ProjectVectorsNoZnormalization(vectors, vectorsN);
@@ -50,8 +51,7 @@ void Scene<numT>::ShowInfo()
 	unsigned w = 500 /10;
 	unsigned h = 500 /10;
 	unsigned h0 = h;
-	
-	
+		
 	renderer->DrawLine(270, h0, 319, h0,0,0,255);
 	renderer->DrawLine(270, 0, 319, 0, 0, 0, 255);
 

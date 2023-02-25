@@ -22,7 +22,6 @@ static void splitFaceLine(std::string& line, std::vector<std::string> & tokens)
 
 template<class numT>
 AirplaneObj<numT>::AirplaneObj() : Object3D<numT>(nullptr, 0, nullptr, 0){
-	useRotMat = false;
 	try {
 
 		std::ifstream file;
@@ -30,9 +29,8 @@ AirplaneObj<numT>::AirplaneObj() : Object3D<numT>(nullptr, 0, nullptr, 0){
 		file.open("c:\\temp\\Airplane.obj");
 	
 		std::string line;
-		while (std::getline(file, line)) {
-
-		
+		while (std::getline(file, line)) 
+		{
 			std::stringstream ss;
 			ss << line;
 			char junk;
@@ -78,28 +76,5 @@ void AirplaneObj<numT>::ObjectToWorld(Camera<numT>* camera, Vector3D<numT>* rota
 template<class numT>
 void AirplaneObj<numT>::UpdateModellToWorldMatrix()
 {
-	if (useRotMat)
-	{
-		Mat33<numT>& rot = rotMat;
-
-		this->m2w.Set(0, 0, rot.m00);
-		this->m2w.Set(0, 1, rot.m01);
-		this->m2w.Set(0, 2, rot.m02);
-
-		this->m2w.Set(1, 0, rot.m10);
-		this->m2w.Set(1, 1, rot.m11);
-		this->m2w.Set(1, 2, rot.m12);
-
-		this->m2w.Set(2, 0, rot.m20);
-		this->m2w.Set(2, 1, rot.m21);
-		this->m2w.Set(2, 2, rot.m22);
-
-		this->m2w.Set(3, 0, this->position.X);
-		this->m2w.Set(3, 1, this->position.Y);
-		this->m2w.Set(3, 2, this->position.Z);
-	}
-	else
-	{
-		Object3D<numT>::UpdateModellToWorldMatrix();
-	}
+	Object3D<numT>::UpdateModellToWorldMatrix();
 }

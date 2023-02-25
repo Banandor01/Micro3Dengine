@@ -12,7 +12,7 @@
 #include "../../Micro3Dengine/Scene.h"
 #include "../../Micro3Dengine/AirplaneObj.h"
 
-#include "../../Micro3Dengine/AirPlane.h"	// TODO move out from this folder
+#include "AirPlane.h"
 
 #include "MeshHelper.h"
 #include <iostream>
@@ -37,9 +37,9 @@ Application<float> app;
 VirtualTFT tft(320, 240);
 Scene<float> scene(320, 240);
 
-DynamicMesh<float> mesh(scene, app);
+
 AirplaneObj<float> airplaneObj;
-Airplane<float> airplane;
+Airplane<float> airplane(scene);
 
 
 // Declare the 3D object(s) we want to render
@@ -53,49 +53,45 @@ void Init()
 	scene.SetRenderer(&tft);
 	scene.AddObject(&bridgeObject);
 	bridgeObject.SetPosition(0, 0, 2000);
-	bridgeObject.SetRotation(0, 0, 0);
 	bridgeObject.SetScale(10, 10, -10);
 	bridgeObject.SetColor(Color(255, 100, 100));
+	bridgeObject.SetRotation(Vector3D<float>(0, 0, 0));
 
 	airplaneObj.SetPosition(0, -13, 32);
-	airplaneObj.SetScale(1, 1, 1);
-	airplaneObj.SetRotation(0, 0, 0);
+	airplaneObj.SetScale(1.0f, 1.0f, 1.0f);
 	scene.AddObject(&airplaneObj);
-
 	
+	airplane.Position() = Vector3D<float>(0, 50, 50);
+	
+	/*	
 	for (int i = 0; i < 10; i++) {
 		cubes[i] = new Object3D<float>(&Cubevectors[0], _countof(Cubevectors), cubeFaces, _countof(cubeFaces));
 		cubes[i]->SetColor(Color(100, 240, 100));
 		cubes[i]->SetScale(4, 4, 4);
 		scene.AddObject(cubes[i]);
-	}
+	}*/
 }
 
 void Loop()
 {
-	Vector3D<float> planeRotVect = airplane.RotationVect();
 
-	int i = 0;
+	DynamicMesh<float> mesh(scene, app);
 	float zr = 0;
 	while (app.Run())
 	{
 		app.HandleEvents(airplane);			// Move plane
 		
 		Vector3D<float> cameraRot = scene.Camera().RotationVect();
-		Vector3D<float> planeRot;
 	
 		scene.Camera().Position() = airplane.Position();			// Move and rotate scene camera according to airplane position and orientation
 		auto airplaneRot = airplane.RotationMatrix().ToEulerAngles();
-		scene.Camera().SetRotation(airplaneRot.X, airplaneRot.Y, airplaneRot.Z);
-
-		auto difference =  airplaneRot - planeRotVect;
-		planeRotVect += difference / 50;
-		airplaneObj.SetRotation(difference.X, difference.Y, difference.Z);
+		scene.Camera().SetRotation(airplaneRot);
+		airplaneObj.SetRotation(airplane.VectorToShow()); 
 
 	 	mesh.UpdateMesh();
 		
 		zr += 0.2f;
-		UpdateObjects(zr);
+		//UpdateObjects(zr);
 		scene.RenderObjects();
 	}
 }
@@ -104,11 +100,11 @@ void UpdateObjects(float ellapsed) {
 	Vector3D<float> pos;
 	for (int i = 0; i < 10; i++)
 	{
-		pos.Z = 4000;
+		pos.Z = 300;
 		pos.X = cos((ellapsed + i * 36) * 1.0f * M_PI / 180) * 150;
 		pos.Y = sin((ellapsed + i * 36) * 1.0f * M_PI / 180) * 150;
 		
-		cubes[i]->SetRotation(ellapsed, ellapsed, 0);
+		cubes[i]->SetRotation(Vector3D<float>(ellapsed, ellapsed, 0));
 		cubes[i]->SetPosition(pos);
 	}
 }

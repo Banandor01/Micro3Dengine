@@ -11,6 +11,7 @@ public:
 	virtual void Pitch(numT step) {}
 	
 	virtual void GoForward(numT steps) {}
+	virtual void Update() {};
 
     Mat33<numT>& RotationMatrix() { return rotationMat; }
 	Vector3D<numT>& RotationVect() { return rotationVect; }

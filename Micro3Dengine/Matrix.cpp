@@ -1,12 +1,12 @@
 
+#include "EngineConfig.h"
 #include "Matrix.h"
 
-#include "EngineConfig.h"
-
 template class Mat33<NUMBERTYPE>;
+template class Mat44<NUMBERTYPE>;
 
 template<class numT>
-inline Mat33<numT>::Mat33() {
+ Mat33<numT>::Mat33() {
 	m00 = 1;  m10 = 0; m20 = 0;
 	m01 = 0;  m11 = 1; m21 = 0;
 	m02 = 0;  m12 = 0; m22 = 1;
@@ -74,29 +74,21 @@ Mat33<numT> Mat33<numT>::operator* (const Mat33 & right)
 
 	return nM;
 }
-//
-//
-//
-//numT sy = sqrt(m00 * m00 + m10 * m10);
-//bool singular = sy < 1e-6; // If
-//
-//numT x, y, z;
-//if (!singular)
-//{
-//	x = atan2(m21, m22);
-//	y = atan2(-m20, sy);
-//	z = atan2(m10, m00);
-//}
-//else
-//{
-//	x = atan2(-m12, m11);
-//	y = atan2(-m20, sy);
-//	z = 0;
-//}
-//
-//x = x / 3.14159 * 180;
-//y = y / 3.14159 * 180;
-//z = z / 3.14159 * 180;
-//
-//return Vector3D<numT>(x, y, z);
-//}
+
+
+template<class numT>
+void Mat44<numT>::SetRotation(numT x, numT y, numT z) {
+
+	numT x2 = x * M_PI / 180;
+	numT y2 = y * M_PI / 180;
+	numT z2 = z * M_PI / 180;
+
+	numT cosz = cos(z2);    numT sinz = sin(z2);
+	numT siny = sin(y2);    numT cosy = cos(y2);
+	numT sinx = sin(x2);    numT cosx = cos(x2);
+
+	el[0] = cosy * cosz;  el[1] = cosz * sinx * siny - cosx * sinz;     el[2] = cosx * cosz * siny + sinx * sinz; el[3] = 0;
+	el[4] = cosy * sinz;  el[5] = cosx * cosz + sinx * siny * sinz;     el[6] = cosx * siny * sinz - cosz * sinx; el[7] = 0;
+	el[8] = -siny;        el[9] = cosy * sinx;                          el[10] = cosx * cosy;					  el[11] = 0;
+	el[12] = 0;			  el[13] = 0;									el[14] = 0;								  el[15] = 0;
+}

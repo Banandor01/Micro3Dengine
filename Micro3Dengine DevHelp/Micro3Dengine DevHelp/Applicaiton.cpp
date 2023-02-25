@@ -14,7 +14,7 @@ inline Application<numT>::Application() :
 {}
 
 template<class numT>
-bool Application<numT>::HandleEvents(MovableBase<numT>& player) {
+bool Application<numT>::HandleEvents(Airplane<numT>& player) {
 	SDL_Event event;
 	SDL_PollEvent(&event);
 	switch (event.type) {
@@ -39,14 +39,14 @@ bool Application<numT>::HandleEvents(MovableBase<numT>& player) {
 		case SDLK_DOWN:  pitchStep = -0.8f;
 			break;
 
-		case SDLK_LEFT:  rollStep = +1.0f;
+		case SDLK_LEFT:  rollStep = +0.8f;
 			break;
-		case SDLK_RIGHT: rollStep = -1.0f;
+		case SDLK_RIGHT: rollStep = -0.8f;
 			break;
 
-		case SDLK_a: yawStep = -0.4f;
+		case SDLK_a: yawStep = -0.8f;
 			break;
-		case SDLK_d: yawStep = 0.4f;
+		case SDLK_d: yawStep = 0.8f;
 			break;
 
 		case SDLK_w: speedStep = 0.01f;
@@ -60,6 +60,11 @@ bool Application<numT>::HandleEvents(MovableBase<numT>& player) {
 			break;
 		case SDLK_h: ts = -0.4f;
 			break;
+		case SDLK_SPACE:
+		    player.Fire();
+			break;
+		
+		
 		default:;
 		}
 	}
@@ -69,12 +74,13 @@ bool Application<numT>::HandleEvents(MovableBase<numT>& player) {
 		player.Pitch(pitchStep);
 		player.Yaw(yawStep);
 	}
+	
+	if (speedStep > 0) { player.SpeedUp(); }
+	else  if (speedStep <0) {
+		player.SpeedDown();
+	}
 
-	if (speed <= 15.0f && speed >= -1.4f) (speed += speedStep);
-	if (speed >= 15.0f) speed = 15;
-	if (speed <= -1.4) speed = -1.4;
-
-	player.GoForward(speed);
+	player.Update();
 
 	return true;
 }

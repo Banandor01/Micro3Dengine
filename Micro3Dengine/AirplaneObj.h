@@ -18,14 +18,9 @@ public:
 				       unsigned int& num, Face3D<numT>* facesOut, unsigned int& facesNum, bool backfaceCulling) override;
 
 	void UpdateModellToWorldMatrix() override;
-	Mat33<numT>& Rotation() { return rotMat; }
-
 	
-
 private:
-	bool useRotMat;
 	std::vector<Vector3D<numT>> verts;
 	std::vector<Face> faces;	
-	Mat33<numT> rotMat;
 };
 

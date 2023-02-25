@@ -1,5 +1,6 @@
 
 #include "../../Micro3Dengine/EngineConfig.h"
+#include "../../Micro3Dengine/Vectors.h"
 #include "MeshHelper.h"
 
 template class DynamicMesh<NUMBERTYPE>;
@@ -8,7 +9,7 @@ template class SquareMesh<NUMBERTYPE>;
 template<class numT>
 inline DynamicMesh<numT>::DynamicMesh(Scene<numT>& scene1, Application<numT>& application) :
 	meshPointDistance(40),
-	perlin(8, 14, 350, 49),
+	perlin(8, 14, 200, 49),
 	scene(scene1),
 	application(application),
 	visibleMeshes(0)
@@ -67,8 +68,6 @@ inline SquareMesh<numT>::SquareMesh() :
 {
 	this->SetColor(Color(255, 155, 150));
 	this->SetScale(1, 1, 1);
-	this->SetRotation(0, 0, 0);
-
 }
 
 template<class numT>
@@ -76,23 +75,18 @@ void SquareMesh<numT>::ObjectToWorld(Camera<numT>* camera, Vector3D<numT>* rotat
 
 	if (!visible) return;
 
+	for (unsigned j = 0; j < 2; j++) {
+	
+		trees[j].ObjectToWorld(camera, rotatedVerts, num,facesOut, facesNum, backfaceCulling);
+	}
+
 	unsigned offset = num;
-	numT xv, yv, zv;
 	this->UpdateModellToWorldMatrix();
+	if (camera != nullptr) { this->m2w = camera->GetMatrix() * this->m2w; }
 
 	for (unsigned i = 0; i < 121; i++)
 	{
-		xv = verticies[i].X * this->scale.X;
-		yv = verticies[i].Y * this->scale.Y;
-		zv = verticies[i].Z * this->scale.Z;
-
-		Vector3D<numT> vect(xv, yv, zv);
-		vect = vect * this->m2w;
-
-		if (camera != nullptr) {
-			vect = vect * camera->GetMatrix();
-		}
-		rotatedVerts[offset + i] = vect;
+		rotatedVerts[offset + i] = verticies[i] * this->m2w;
 	}
 	num += 121;
 
@@ -137,12 +131,19 @@ void SquareMesh<numT>::CreateMesh(Perlin& perlin, Vector3D<numT>& pos, int offse
 	{
 		oldx = offsetx;
 		oldz = offsetz;
+		unsigned v = 0;
 		int offset = meshPointDistance * 5;
 		for (int z = 0; z < 11; z++) {
 			for (int x = 0; x < 11; x++) {
 				numT y = perlin.Get((numT)(100 + x + offsetx * 10) / 300.0f, (numT)(100 + z + offsetz * 10) / 300.0f);
-				auto t = Vector3D<numT>(-offset + x * meshPointDistance, y, -offset + z * meshPointDistance);
-				verticies[index++] = t;
+				y *= 2.5f;
+				auto vertex = Vector3D<numT>(-offset + x * meshPointDistance, y, -offset + z * meshPointDistance);
+				verticies[index++] = vertex;
+				
+				if ( (x+z)%3 == 1 && v <2) {
+					v++;
+					trees[v].SetPosition(pos + vertex);
+				}				
 			}
 		}
 		index = 0;

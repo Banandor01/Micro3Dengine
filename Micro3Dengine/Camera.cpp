@@ -10,10 +10,10 @@ inline void Camera<numT>::SetPosition(const Vector3D<numT>& pos) {
 }
 
 template<class numT>
-void Camera<numT>::SetRotation(numT x, numT y, numT z)
+void Camera<numT>::SetRotation(const Vector3D<numT> rotVect)
 {
-	rotation.CreateRotationMatrix(x, y, z);
-	rotVect.X = x; rotVect.Y = y; rotVect.Z = z;
+	this->rotVect = rotVect;
+	rotation.CreateRotationMatrix(rotVect.X, rotVect.Y, rotVect.Z);
 }
 
 template<class numT>
@@ -37,7 +37,7 @@ inline Vector3D<numT>& Camera<numT>::Position() {
 
 template<class numT>
 Mat44<numT> & Camera<numT>::GetMatrix() {
-	return matrix4;
+	return cameraMatrix;
 }
 
 template<class numT>
@@ -59,7 +59,7 @@ inline void Camera<numT>::LookDirection(Vector3D<numT> eye, Vector3D<numT> dir, 
 	Vector3D<numT> yaxis = zaxis.CrossProduct(xaxis).Normalize();
 
 	// Construc matrix	
-	auto m = matrix4.Elements();
+	auto m = cameraMatrix.Elements();
 	
 	m[0] = xaxis.X;	m[1] = xaxis.Y; m[2] =  xaxis.Z;  m[3] = -xaxis.DotProduct(eye);
 	m[4] = yaxis.X;	m[5] = yaxis.Y; m[6] =  yaxis.Z;  m[7] = -yaxis.DotProduct(eye);
